@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,21 +7,11 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        .report-gradient {
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-        }
-
-        .upload-zone {
-            transition: all 0.3s ease;
-        }
-
-        .upload-zone.dragover {
-            border-color: #dc2626;
-            background-color: #fef2f2;
-        }
+        .report-gradient { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); }
+        .upload-zone { transition: all 0.3s ease; }
+        .upload-zone.dragover { border-color: #dc2626; background-color: #fef2f2; }
     </style>
 </head>
-
 <body class="bg-slate-50 font-sans text-slate-900">
 
     <div class="container mx-auto px-4 py-12 max-w-4xl">
@@ -30,14 +19,12 @@
             <h1 class="text-4xl font-black tracking-tight text-slate-900 mb-4 uppercase">
                 <i class="fas fa-shield-virus text-red-600 mr-2"></i>ScamWatch <span class="text-red-600">Pro</span>
             </h1>
-            <p class="text-slate-500 font-medium">Upload an email file (.txt/.eml) or paste text for AI forensic
-                analysis.</p>
+            <p class="text-slate-500 font-medium">Upload an email file (.txt/.eml) or paste text for AI forensic analysis.</p>
         </div>
 
         <div class="bg-white rounded-[2.5rem] shadow-xl p-8 mb-8 border border-slate-100">
-
-            <div id="dropZone"
-                class="upload-zone border-2 border-dashed border-slate-200 rounded-3xl p-8 text-center mb-6 cursor-pointer hover:border-slate-400">
+            
+            <div id="dropZone" class="upload-zone border-2 border-dashed border-slate-200 rounded-3xl p-8 text-center mb-6 cursor-pointer hover:border-slate-400">
                 <input type="file" id="fileInput" class="hidden" accept=".txt,.eml,.msg">
                 <div id="uploadPrompt">
                     <i class="fas fa-cloud-upload-alt text-3xl text-slate-300 mb-3"></i>
@@ -45,25 +32,21 @@
                     <p class="text-xs text-slate-400">Supports .txt and .eml formats</p>
                 </div>
                 <div id="fileInfo" class="hidden">
-                    <p class="text-red-600 font-bold text-sm"><i class="fas fa-file-alt mr-2"></i><span
-                            id="fileName"></span></p>
-                    <button onclick="clearFile()"
-                        class="text-[10px] uppercase font-black text-slate-400 hover:text-red-600 mt-2">Remove
-                        File</button>
+                    <p class="text-red-600 font-bold text-sm"><i class="fas fa-file-alt mr-2"></i><span id="fileName"></span></p>
+                    <button onclick="clearFile()" class="text-[10px] uppercase font-black text-slate-400 hover:text-red-600 mt-2">Remove File</button>
                 </div>
             </div>
 
             <div class="relative mb-6">
-                <div class="absolute inset-0 flex items-center"><span class="w-full border-t border-slate-100"></span>
-                </div>
-                <div class="relative flex justify-center text-xs uppercase font-black text-slate-300"><span
-                        class="bg-white px-4 italic">OR PASTE TEXT</span></div>
+                <div class="absolute inset-0 flex items-center"><span class="w-full border-t border-slate-100"></span></div>
+                <div class="relative flex justify-center text-xs uppercase font-black text-slate-300"><span class="bg-white px-4 italic">OR PASTE TEXT</span></div>
             </div>
 
-            <textarea id="userInput" rows="6" placeholder="Paste message content here..."
+            <textarea id="userInput" rows="6" 
+                placeholder="Paste message content here..."
                 class="w-full p-6 bg-slate-50 border border-slate-200 rounded-3xl outline-none focus:border-red-500 transition-all font-medium text-slate-700"></textarea>
-
-            <button onclick="runDetection()"
+            
+            <button onclick="runDetection()" 
                 class="w-full mt-6 bg-slate-900 hover:bg-red-600 text-white font-black py-5 rounded-2xl transition-all shadow-lg uppercase tracking-widest text-sm">
                 <i class="fas fa-microscope mr-2"></i> Start Intelligence Scan
             </button>
@@ -71,9 +54,8 @@
 
         <div id="reportOutput" class="hidden transition-all duration-500">
             <div class="report-gradient text-white rounded-[2.5rem] p-10 shadow-2xl relative">
-                <div id="statusBadge"
-                    class="absolute top-10 right-10 px-4 py-1 rounded-full text-[10px] font-black uppercase"></div>
-
+                <div id="statusBadge" class="absolute top-10 right-10 px-4 py-1 rounded-full text-[10px] font-black uppercase"></div>
+                
                 <div class="space-y-8">
                     <div>
                         <p class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-2">Classification</p>
@@ -111,7 +93,7 @@
 
         // File Selection Handlers
         dropZone.onclick = () => fileInput.click();
-
+        
         fileInput.onchange = (e) => handleFiles(e.target.files);
 
         dropZone.ondragover = (e) => { e.preventDefault(); dropZone.classList.add('dragover'); };
@@ -154,7 +136,7 @@
 
             // Pattern Matching Logic (Based on your instructions)
             if (lowerInput.match(/urgent|immediately|act now|suspended|verified/)) {
-                score += 30; reasons.push("Urgency/Pressure tactics detected.");
+                score += 30; reasons.push("Urgency/Pressure tactics detected."); 
                 flags.push("High Urgency");
             }
             if (lowerInput.match(/\$\d{2,}\s*\/(hr|hour|weekly)/)) {
@@ -178,7 +160,11 @@
 
             document.getElementById('reportOutput').classList.remove('hidden');
             document.getElementById('classification').innerText = classification;
-            document.getElementById(badge.innerText = classification;
+            document.getElementById('confidenceText').innerText = conf + "%";
+            document.getElementById('confidenceBar').style.width = conf + "%";
+
+            const badge = document.getElementById('statusBadge');
+            badge.innerText = classification;
             badge.className = `absolute top-10 right-10 px-4 py-1 rounded-full text-[10px] font-black uppercase ${classification === 'Scam' ? 'bg-red-600' : 'bg-yellow-500'}`;
 
             document.getElementById('reasonsList').innerHTML = reasons.map(r => `<li><i class="fas fa-caret-right text-red-600 mr-2"></i>${r}</li>`).join('') || "<li>No immediate threats detected. Proceed with normal caution.</li>";
@@ -188,8 +174,4 @@
         }
     </script>
 </body>
-
-</html>'confidenceText').innerText = conf + "%";
-document.getElementById('confidenceBar').style.width = conf + "%";
-
-const badge = document.getElementById('statusBadge');
+</html>
