@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ScamWatch | Admin & Community Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        html { scroll-behavior: smooth; }
+        @keyframes meshGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .mesh-bg {
+            background: linear-gradient(-45deg, #0f172a, #1e293b, #dc2626, #0f172a);
+            background-size: 400% 400%;
+            animation: meshGradient 15s ease infinite;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .admin-only { display: none; }
+        body.admin-mode .admin-only { display: inline-block; }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+
+    <nav class="fixed top-4 left-0 right-0 z-50 px-4">
+        <div class="container mx-auto glass rounded-2xl p-4 flex justify-between items-center shadow-2xl text-white">
+            <h1 class="text-xl font-black tracking-tighter">SCAM<span class="text-red-500">WATCH</span></h1>
+            <div class="flex items-center space-x-4">
+                <button onclick="toggleAdmin()" id="adminBtn" class="text-[10px] border border-white/20 px-3 py-1 rounded-full hover:bg-white/10 transition">
+                    <i class="fas fa-lock mr-1"></i> ADMIN MODE: OFF
+                </button>
+                <a href="#report" class="bg-red-600 px-5 py-2 rounded-xl text-xs font-bold hover:bg-red-700 transition shadow-lg shadow-red-600/20">REPORT</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="mesh-bg pt-40 pb-32 px-4 text-center text-white relative">
+        <div class="container mx-auto relative z-10">
+            <h2 class="text-5xl md:text-7xl font-black mb-6 tracking-tight">Identify. <span class="text-red-500">Expose.</span> Protect.</h2>
+            <p class="text-gray-400 text-lg max-w-xl mx-auto">The community-driven database to stop job market predators in their tracks.</p>
+        </div>
+    </header>
+
+    <main class="container mx-auto py-12 px-4">
+        
+        <section id="database" class="mb-8">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4 bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+                <div class="flex flex-1 w-full gap-2">
+                    <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Search company..." class="flex-1 border p-3 rounded-xl bg-gray-50 focus:ring-2 focus:ring-red-500 outline-none text-sm">
+                    <select id="typeFilter" onchange="filterTable()" class="border p-3 rounded-xl bg-gray-50 text-sm outline-none">
+                        <option value="All">All Types</option>
+                        <option value="Check Cashing">Check Cashing</option>
+                        <option value="Phishing">Phishing</option>
+                        <option value="Equipment Fee">Equipment Fee</option>
+                    </select>
+                </div>
+                <div class="flex gap-2 admin-only">
+                    <button onclick="exportToCSV()" class="bg-blue-50 text-blue-600 px-4 py-3 rounded-xl font-bold text-xs hover:bg-blue-100">
+                        <i class="fas fa-download mr-1"></i> EXPORT CSV
+                    </button>
+                    <button onclick="clearPending()" class="bg-red-50 text-red-600 px-4 py-3 rounded-xl font-bold text-xs hover:bg-red-100">
+                        <i class="fas fa-trash-alt mr-1"></i> PURGE PENDING
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100 mb-20">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead class="bg-gray-50 text-gray-400 text-[10px] uppercase tracking-widest font-bold">
+                        <tr>
+                            <th class="p-6">Entity</th>
+                            <th class="p-6">Category</th>
+                            <th class="p-6">Date</th>
+                            <th class="p-6">Status</th>
+                            <th class="p-6 admin-only text-center">Management</th>
+                        </tr>
+                    </thead>
+                    <tbody id="scam-list" class="text-sm text-slate-700">
+                        </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="report" class="bg-slate-900 p-8 md:p-12 rounded-[3rem] text-white shadow-2xl max-w-4xl mx-auto">
+            <h3 class="text-3xl font-black mb-2">Found a Scam?</h3>
+            <p class="text-gray-400 mb-8">Your report could save someone's life savings. All submissions are reviewed by moderators.</p>
+            
+            <form id="scamForm" class="grid md:grid-cols-2 gap-6">
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-gray-500 uppercase">Company/Sender</label>
+                    <input type="text" id="name" required class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-red-500 transition">
+                </div>
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-gray-500 uppercase">Scam Type</label>
+                    <select id="type" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none">
+                        <option class="bg-slate-900">Check Cashing</option>
+                        <option class="bg-slate-900">Phishing</option>
+                        <option class="bg-slate-900">Equipment Fee</option>
+                    </select>
+                </div>
+                <div class="md:col-span-2 space-y-2">
+                    <label class="text-xs font-bold text-gray-500 uppercase">Evidence / Details</label>
+                    <textarea id="details" rows="3" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-red-500 transition"></textarea>
+                </div>
+                <button type="submit" class="md:col-span-2 bg-red-600 p-5 rounded-2xl font-black text-lg hover:bg-red-700 transition-all hover:scale-[1.02]">SUBMIT FOR REVIEW</button>
+            </form>
+        </section>
+    </main>
+
+    <script>
+        const defaultData = [
+            { name: "GlobalTech HR (Fake)", type: "Equipment Fee", date: "Feb 18, 2026", status: "Confirmed Scam", sClass: "text-red-500" },
+            { name: "hr-verify@gmail.com", type: "Phishing", date: "Feb 15, 2026", status: "Under Review", sClass: "text-yellow-600" }
+        ];
+
+        // 1. Core Loader
+        function loadScams() {
+            const list = document.getElementById('scam-list');
+            const data = JSON.parse(localStorage.getItem('scamData')) || defaultData;
+            
+            list.innerHTML = data.map((s, i) => `
+                <tr class="border-b border-gray-50 hover:bg-gray-50/50 transition">
+                    <td class="p-6 font-bold text-slate-900">${s.name}</td>
+                    <td class="p-6"><span class="bg-slate-100 px-3 py-1 rounded-full text-[10px] font-black uppercase">${s.type}</span></td>
+                    <td class="p-6 text-gray-400 text-xs">${s.date}</td>
+                    <td class="p-6"><span class="${s.sClass} font-bold">● ${s.status}</span></td>
+                    <td class="p-6 admin-only text-center whitespace-nowrap">
+                        ${s.status === "Pending Review" ? 
+                            `<button onclick="verifyItem(${i})" class="bg-green-500 text-white px-3 py-1 rounded-lg text-[10px] font-bold mr-2 hover:bg-green-600">VERIFY</button>` : ''}
+                        <button onclick="deleteItem(${i})" class="text-gray-300 hover:text-red-500 transition"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // 2. Admin & Filter Functions
+        function toggleAdmin() {
+            document.body.classList.toggle('admin-mode');
+            const btn = document.getElementById('adminBtn');
+            const isAdmin = document.body.classList.contains('admin-mode');
+            btn.innerHTML = isAdmin ? '<i class="fas fa-unlock mr-1"></i> ADMIN MODE: ON' : '<i class="fas fa-lock mr-1"></i> ADMIN MODE: OFF';
+            btn.classList.toggle('bg-red-600', isAdmin);
+        }
+
+        function filterTable() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const type = document.getElementById('typeFilter').value;
+            const rows = document.querySelectorAll('#scam-list tr');
+
+            rows.forEach(row => {
+                const nameMatch = row.cells[0].innerText.toLowerCase().includes(search);
+                const typeMatch = type === "All" || row.cells[1].innerText.includes(type.toUpperCase());
+                row.style.display = (nameMatch && typeMatch) ? "" : "none";
+            });
+        }
+
+        // 3. Management Actions
+        function verifyItem(index) {
+            let data = JSON.parse(localStorage.getItem('scamData')) || defaultData;
+            data[index].status = "Confirmed Scam";
+            data[index].sClass = "text-red-500";
+            saveAndRefresh(data);
+        }
+
+        function deleteItem(index) {
+            if(confirm("Permanently delete this report?")) {
+                let data = JSON.parse(localStorage.getItem('scamData')) || defaultData;
+                data.splice(index, 1);
+                saveAndRefresh(data);
+            }
+        }
+
+        function clearPending() {
+            if(confirm("Purge all unverified reports?")) {
+                let data = JSON.parse(localStorage.getItem('scamData')) || defaultData;
+                const filtered = data.filter(s => s.status !== "Pending Review");
+                saveAndRefresh(filtered);
+            }
+        }
+
+        function exportToCSV() {
+            const data = JSON.parse(localStorage.getItem('scamData')) || defaultData;
+            const csv = "Name,Type,Date,Status\n" + data.map(s => `${s.name},${s.type},${s.date},${s.status}`).join("\n");
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.setAttribute('href', url);
+            a.setAttribute('download', 'scam_report_2026.csv');
+            a.click();
+        }
+
+        function saveAndRefresh(data) {
+            localStorage.setItem('scamData', JSON.stringify(data));
+            loadScams();
+        }
+
+        // 4. Form Handler
+        document.getElementById('scamForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const newItem = {
+                name: document.getElementById('name').value,
+                type: document.getElementById('type').value,
+                date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+                status: "Pending Review",
+                sClass: "text-gray-400"
+            };
+            let data = JSON.parse(localStorage.getItem('scamData')) || defaultData;
+            data.unshift(newItem);
+            saveAndRefresh(data);
+            this.reset();
+            alert("Report submitted for review.");
+        });
+
+        window.onload = loadScams;
+    </script>
+</body>
+</html>
