@@ -97,12 +97,16 @@ adding the text(evidence)
 
 https://github.com/user-attachments/assets/dbfb009a-8198-45b9-b29e-3bb70fee649d
 
+architucure daigram
+             <img width="1536" height="1024" alt="ChatGPT Image Feb 21, 2026, 11_17_49 AM" src="https://github.com/user-attachments/assets/b603b5dd-501b-46ff-9cc7-8c0a3f4e8a67" />
+  
 
 
 *Explain what the video demonstrates - key features, user flow, technical highlights*
 
 ### Additional Demos
 [Add any extra demo materials/links - Live site, APK download, online demo, etc.]
+
 
 ---
 
@@ -144,7 +148,7 @@ If you used AI tools during development, document them here for transparency:
 
 ## License
 
-This project is licensed under the [LICENSE_NAME] License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the [MITlicense a permissive open source charging that allows anyone to use modify,and distribute the code] License - see the [LICENSE](LICENSE) file for details.
 
 **Common License Options:**
 - MIT License (Permissive, widely used)
